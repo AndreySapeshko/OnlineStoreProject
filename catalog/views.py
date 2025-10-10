@@ -8,7 +8,7 @@ def catalog(request):
 
 
 def home(request):
-    latest_products = Product.objects.all().order_by('-created_at')[:5]
+    latest_products = Product.objects.all()
     return render(request, 'catalog/home.html', {'products': latest_products})
 
 
