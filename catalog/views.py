@@ -20,3 +20,9 @@ def contacts(request):
         print(f'Сообщение от {name} {phone}: {message}')
         return HttpResponse(f"Спасибо, {name}! Ваше сообщение получено.")
     return render(request, 'catalog/contacts.html')
+
+
+def product(request, product_id):
+    product = Product.object.get(id=product_id)
+    context = {'product': product}
+    return render(request, 'catalog/product.html', context)
