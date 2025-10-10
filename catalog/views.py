@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .models import Product
 
 # Create your views here.
 def catalog(request):
@@ -7,7 +8,8 @@ def catalog(request):
 
 
 def home(request):
-    return render(request, 'catalog/home.html')
+    latest_products = Product.objects.all().order_by('-created_at')[:5]
+    return render(request, 'catalog/home.html', {'products': latest_products})
 
 
 def contacts(request):
