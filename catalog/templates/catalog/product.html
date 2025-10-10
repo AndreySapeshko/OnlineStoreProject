@@ -1,4 +1,5 @@
 {% extends 'catalog/base.html' %}
+{% load my_tags %}
 
 {% block navbar %}
   {% include 'catalog/navbar.html' %}
@@ -14,12 +15,13 @@
 <div class="card mb-3">
   <div class="row g-0">
     <div class="col-md-4">
-      <img src="..." class="img-fluid rounded-start" alt="...">
+      <img src="{{ product.product_image | media_filter }}" class="img-fluid rounded-start" alt="{{ product.name }}">
     </div>
     <div class="col-md-8">
       <div class="card-body">
         <h5 class="card-title">{{ product.name }}</h5>
         <p class="card-text">{{ product.description }}</p>
+        <a class="btn btn-lg btn-block btn-outline-primary" href="{% url 'catalog:home' %}" role="button">На главную</a>
       </div>
     </div>
   </div>

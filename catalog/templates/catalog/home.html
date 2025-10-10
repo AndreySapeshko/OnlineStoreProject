@@ -1,4 +1,5 @@
 {% extends 'catalog/base.html' %}
+{% load my_tags %}
 
 {% block navbar %}
   {% include 'catalog/navbar.html' %}
@@ -16,6 +17,7 @@
         {% for product in products %}
         <div class="col">
             <div class="card mb-4 box-shadow">
+                <img src="{{ product.product_image | media_filter }}" class="card-img-top" alt="{{ product.name }}">
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">{{ product.name }}</h4>
                 </div>
@@ -24,7 +26,7 @@
                     <ul class="list-unstyled mt-3 mb-4 text-start m-3">
                         <li>{{ product.description|truncatechars:100 }}</li>
                     </ul>
-                    <button type="button" class="btn btn-lg btn-block btn-outline-primary">Купить</button>
+                    <a class="btn btn-lg btn-block btn-outline-primary" href="{% url 'catalog:product' product.pk %}" role="button">Купить</a>
                 </div>
             </div>
         </div>
