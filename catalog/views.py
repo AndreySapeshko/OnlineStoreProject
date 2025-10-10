@@ -23,6 +23,6 @@ def contacts(request):
 
 
 def product(request, product_id):
-    product = Product.object.get(id=product_id)
+    product = Product.objects.get(id=product_id)
     context = {'product': product}
     return render(request, 'catalog/product.html', context)

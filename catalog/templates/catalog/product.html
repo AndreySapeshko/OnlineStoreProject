@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block h1 %}Skystore{% endblock %}
+
+{% block p %}Skystore - это отличный вариант хранения ваших плагинов и примеров кода, который вы бы хотели
+продать{% endblock %}
+
+{% block content %}
+<!-- Сюда будет подставляться контент дочерних шаблонов -->
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="..." class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{ product.name }}</h5>
+        <p class="card-text">{{ product.description }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
