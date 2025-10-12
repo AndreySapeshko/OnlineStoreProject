@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Product
+from .models import Product, Category
+from .forms import ProductForm
 
 # Create your views here.
 def catalog(request):
@@ -8,8 +9,8 @@ def catalog(request):
 
 
 def home(request):
-    latest_products = Product.objects.all()
-    return render(request, 'catalog/home.html', {'products': latest_products})
+    products = Product.objects.all()
+    return render(request, 'catalog/home.html', {'products': products})
 
 
 def contacts(request):
@@ -26,3 +27,25 @@ def product(request, product_id):
     product = Product.objects.get(id=product_id)
     context = {'product': product}
     return render(request, 'catalog/product.html', context)
+
+
+def add_product(request):
+    categories = Category.objects.all()
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        print(form.is_valid())
+        if form.is_valid():
+            product = form.save()
+            return redirect('catalog:product', product_id=product.pk)
+        else:
+            # Вывод всех ошибок в консоль
+            print("Форма невалидна!")
+            print("Ошибки формы:", form.errors)
+            print("Ошибки по полям:")
+            for field in form:
+                if field.errors:
+                    print(f"Поле '{field.label}': {field.errors}")
+    else:
+        form = ProductForm()
+
+    return render(request, 'catalog/add_product.html', {'form': form, 'categories': categories})
