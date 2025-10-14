@@ -8,9 +8,15 @@ from .models import Product, Category
 from .forms import ProductForm
 
 
-def home(request):
-    products = Product.objects.all()
-    return render(request, 'catalog/home.html', {'products': products})
+# def home(request):
+#     products = Product.objects.all()
+#     return render(request, 'catalog/home.html', {'products': products})
+
+
+class HomeView(View):
+    def get(self, request):
+        products = Product.objects.all()
+        return render(request, 'catalog/home.html', {'products': products})
 
 
 # def contacts(request):
