@@ -1,11 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.urls import reverse_lazy
+from django.views.generic import DetailView, CreateView, ListView, UpdateView, DeleteView
+
 from .models import Product, Category
 from .forms import ProductForm
-
-# Create your views here.
-def catalog(request):
-    return render(request, 'catalog/catalog.html')
 
 
 def home(request):
@@ -23,17 +22,49 @@ def contacts(request):
     return render(request, 'catalog/contacts.html')
 
 
-def product(request, product_id):
-    product = Product.objects.get(id=product_id)
-    context = {'product': product}
-    return render(request, 'catalog/product.html', context)
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = 'catalog/product_confirm_delete.html'
+    success_url = reverse_lazy('catalog:product_list')
+
+
+class ProductListView(ListView):
+    model = Product
+    template_name = 'catalog/product_list.html'
+    context_object_name = 'products'
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    fields = ['name', 'description', 'product_image', 'price', 'category']
+    template_name = 'catalog/product_form.html'
+    success_url = reverse_lazy('catalog:product_list')
+
+
+class ProductCreateView(CreateView):
+    model = Product
+    fields = ['name', 'description', 'product_image', 'price', 'category']
+    template_name = 'catalog/product_form.html'
+    success_url = reverse_lazy('catalog:product_list')
+
+
+
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/product_detail.html'
+    context_object_name = 'product'
+
+
+# def product(request, product_id):
+#     product = Product.objects.get(id=product_id)
+#     context = {'product': product}
+#     return render(request, 'catalog/product_detail.html', context)
 
 
 def add_product(request):
     categories = Category.objects.all()
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
-        print(form.is_valid())
         if form.is_valid():
             product = form.save()
             return redirect('catalog:product', product_id=product.pk)
