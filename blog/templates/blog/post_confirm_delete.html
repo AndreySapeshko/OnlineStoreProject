@@ -1,6 +1,10 @@
 {% extends 'catalog/base.html' %}
 {% load my_tags %}
 
+{% block navbar %}
+  {% include 'catalog/navbar.html' %}
+{% endblock %}
+
 {% block h1 %}Skystore{% endblock %}
 
 {% block p %}Skystore Blog{% endblock %}
