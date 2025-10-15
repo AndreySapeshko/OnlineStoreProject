@@ -1,0 +1,28 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+
+{% block h1 %}Skystore{% endblock %}
+
+{% block p %}Skystore Blog{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img src="{{ post.preview | media_filter }}" class="img-fluid rounded-start"
+                 alt="{{ post.title }}">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h1 class="mb-4">Удалить объект Post</h1>
+                <p>Вы уверены, что хотите удалить "{{ post.title }}"?</p>
+                <form method="post" enctype="multipart/form-data" id="product-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary">Удалить</button>
+                    <a href="{% url 'blog:post_list' %}" class="btn btn-secondary">Отмена</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -5,7 +5,7 @@ from .models import Post
 
 class PostCreateView(CreateView):
     model = Post
-    fields = ['title', 'text', 'preview', 'is_published', 'count_views']
+    fields = ['title', 'text', 'preview', 'is_published']
     template_name = 'blog/post_form.html'
     success_url = reverse_lazy('blog:post_list')
 
@@ -25,16 +25,20 @@ class PostDetailView(DetailView):
     context_object_name = 'post'
 
     def get_object(self, queryset=None):
-        obj = super().object(queryset)
-        if not obj.is_active:
-            raise Http404("Object not found")
-        obj.count_views += 1
+        obj = super().get_object(queryset)
+        viewed_posts = self.request.session.get('viewed_posts', [])
+
+        if obj.id not in viewed_posts:
+            obj.count_views += 1
+            obj.save()
+            viewed_posts.append(obj.id)
+            self.request.session['viewed_posts'] = viewed_posts
         return obj
 
 
 class PostUpdateView(UpdateView):
     model = Post
-    fields = ['title', 'text', 'preview', 'is_published', 'count_views']
+    fields = ['title', 'text', 'preview', 'is_published']
     template_name = 'blog/post_form.html'
     success_url = reverse_lazy('blog:post_detail')
 

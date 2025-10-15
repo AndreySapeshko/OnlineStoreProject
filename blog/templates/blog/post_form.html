@@ -1,0 +1,27 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+
+{% block h1 %}Skystore{% endblock %}
+
+{% block p %}Skystore Blog{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img src="{{ post.preview | media_filter }}" class="img-fluid rounded-start"
+                 alt="{{ post.title }}">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" id="product-form">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <a href="{% url 'blog:post_list' %}" class="btn btn-secondary">Отмена</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
