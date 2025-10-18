@@ -1,0 +1,28 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+
+{% block navbar %}
+{% include 'catalog/navbar.html' %}
+{% endblock %}
+
+{% block h1 %}Skystore{% endblock %}
+
+{% block p %}Skystore - это отличный вариант хранения ваших плагинов и примеров кода, который вы бы хотели
+продать{% endblock %}
+
+{% block content %}
+<!-- Сюда будет подставляться контент дочерних шаблонов -->
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">{{ category.name }}</h5>
+                <p class="card-text">{{ category.description }}</p>
+                <a href="{% url 'catalog:category_edit' category.pk %}" class="btn btn-lg btn-outline-secondary">Редактировать</a>
+                <a href="{% url 'catalog:category_delete' category.pk %}" class="btn btn-lg btn-outline-danger">Удалить</a>
+                <a href="{% url 'catalog:category_list' %}" class="btn btn-lg btn-outline-primary">Вернуться к списку</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

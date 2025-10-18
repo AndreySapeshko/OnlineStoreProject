@@ -11,19 +11,13 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">Форма добавления и редактирования product</h1>
-    <form method="post" enctype="multipart/form-data">
+    <h1 class="mb-4">Форма добавления и редактирования category</h1>
+    <form method="post">
         {% csrf_token %}
-        {% if form.non_field_errors %}
-        <div class="alert alert-danger">
-            {% for error in form.non_field_errors %}
-            {{ error }}
-            {% endfor %}
-        </div>
-        {% endif %}
+        {{ form.non_field_errors }}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Сохранить</button>
-        <a href="{% url 'catalog:product_list' %}" class="btn btn-secondary">Отмена</a>
+        <a href="{% url 'catalog:category_list' %}" class="btn btn-secondary">Отмена</a>
     </form>
 </div>
 {% endblock %}

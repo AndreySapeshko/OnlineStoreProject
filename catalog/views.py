@@ -5,7 +5,7 @@ from django.views import View
 from django.views.generic import DetailView, CreateView, ListView, UpdateView, DeleteView
 
 from .models import Product, Category
-from .forms import ProductForm
+from .forms import ProductForm, CategoryForm
 
 
 # def home(request):
@@ -17,16 +17,6 @@ class HomeView(View):
     def get(self, request):
         products = Product.objects.all()
         return render(request, 'catalog/home.html', {'products': products})
-
-
-# def contacts(request):
-#     if request.method == 'POST':
-#         name = request.POST.get('name')
-#         message = request.POST.get('message')
-#         phone = request.POST.get('phone')
-#         print(f'Сообщение от {name} {phone}: {message}')
-#         return HttpResponse(f"Спасибо, {name}! Ваше сообщение получено.")
-#     return render(request, 'catalog/contacts.html')
 
 
 class ContactsView(View):
@@ -56,14 +46,14 @@ class ProductListView(ListView):
 
 class ProductUpdateView(UpdateView):
     model = Product
-    fields = ['name', 'description', 'product_image', 'price', 'category']
+    form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:product_list')
 
 
 class ProductCreateView(CreateView):
     model = Product
-    fields = ['name', 'description', 'product_image', 'price', 'category']
+    form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:product_list')
 
@@ -75,10 +65,36 @@ class ProductDetailView(DetailView):
     context_object_name = 'product'
 
 
-# def product(request, product_id):
-#     product = Product.objects.get(id=product_id)
-#     context = {'product': product}
-#     return render(request, 'catalog/product_detail.html', context)
+class CategoryCreateView(CreateView):
+    model = Category
+    template_name = 'catalog/category_form.html'
+    form_class = CategoryForm
+    success_url = reverse_lazy('catalog:category_list')
+
+
+class CategoryListView(ListView):
+    model = Category
+    template_name = 'catalog/category_list.html'
+    context_object_name = 'categories'
+
+
+class CategoryDetailView(DetailView):
+    model = Category
+    template_name = 'catalog/category_detail.html'
+    context_object_name = 'category'
+
+
+class CategoryUpdateView(UpdateView):
+    model = Category
+    template_name = 'catalog/category_form.html'
+    form_class = CategoryForm
+    success_url = reverse_lazy('catalog:category_list')
+
+
+class CategoryDeleteView(DeleteView):
+    model = Category
+    template_name = 'catalog/category_confirm_delete.html'
+    success_url = reverse_lazy('catalog:category_list')
 
 
 def add_product(request):

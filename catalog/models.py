@@ -19,7 +19,10 @@ class Product(models.Model):
 
     name = models.CharField(max_length=100, verbose_name='Наименование')
     description = models.CharField(max_length=300, verbose_name='Описание')
-    product_image = models.ImageField(upload_to='images/', verbose_name='Фото продукта')
+    product_image = models.ImageField(upload_to='images/',
+                                      blank=True,
+                                      null=True,
+                                      verbose_name='Фото продукта')
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
