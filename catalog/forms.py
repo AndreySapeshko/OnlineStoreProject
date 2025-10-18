@@ -1,7 +1,8 @@
 from django import forms
-from prompt_toolkit.validation import ValidationError
+from django.conf import settings
 
 from .models import Product, Category
+
 
 
 class ProductForm(forms.ModelForm):
@@ -22,9 +23,8 @@ class ProductForm(forms.ModelForm):
         cleaned_data = super().clean()
         name = cleaned_data.get('name')
         description = cleaned_data.get('description')
-        forbidden_words = ['казино', 'криптовалюта', 'крипта', 'биржа', 'дешево', 'бесплатно',
-                           'обман', 'полиция', 'радар']
-        for word in forbidden_words:
+
+        for word in settings.FORBIDDEN_WORDS:
             if name and description and (word in name.lower() or word in description.lower()):
                 raise forms.ValidationError(f'Слово "{word}" нельзя использовать в названии и описании')
         return cleaned_data
