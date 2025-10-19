@@ -1,0 +1,33 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+
+{% block navbar %}
+  {% include 'catalog/navbar.html' %}
+{% endblock %}
+
+{% block h1 %}Skystore{% endblock %}
+
+{% block p %}Skystore Blog{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img src="{{ post.preview | media_filter }}" class="img-fluid rounded-start"
+                 alt="{{ post.title }}">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">{{ post.title }}</h5>
+                <p class="card-text">{{ post.text }}</p>
+                <a href="{% url 'blog:post_edit' post.pk %}" class="btn btn-lg btn-outline-secondary">Редактировать</a>
+                <a href="{% url 'blog:post_delete' post.pk %}" class="btn btn-lg btn-outline-danger">Удалить</a>
+                <a href="{% url 'blog:post_list' %}" class="btn btn-lg btn-outline-primary">Вернуться к списку</a>
+                <figcaption class="blockquote-footer text-end">
+                    {{ post.count_views }} <cite title="Source Title">Просмотров</cite>
+                </figcaption>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

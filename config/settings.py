@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'catalog',
+    'blog',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+MAX_UPLOAD_SIZE = 5 * 1024 * 1024
+ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.webp']
+MAX_IMAGE_WIDTH = 860
+MAX_IMAGE_HEIGHT = 1080
+
+FORBIDDEN_WORDS = [
+    'казино', 'криптовалюта', 'крипта', 'биржа',
+    'дешево', 'бесплатно', 'обман', 'полиция', 'радар'
+]
