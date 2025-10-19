@@ -1,5 +1,8 @@
+import os
+
 from django import forms
 from django.conf import settings
+from PIL import Image
 
 from .models import Product, Category
 
@@ -12,6 +15,43 @@ class ProductForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
         }
+
+    def clean_product_image(self):
+        image = self.cleaned_data.get('product_image')
+        if not image:
+            return image
+
+        if image.size > settings.MAX_UPLOAD_SIZE:
+            size_mb = image.size / 1024 / 1024
+            max_mb = settings.MAX_UPLOAD_SIZE / 1024 / 1024
+            raise forms.ValidationError(f'Размер файла не должен привышать {max_mb} МБ. Размер вашего файла: {size_mb:.1f} МБ.')
+
+        ext = os.path.splitext(image.name)[1].lower()
+        if ext not in settings.ALLOWED_IMAGE_EXTENSIONS:
+            raise forms.ValidationError(
+                f'Недопустимый формат файла. Разрешенные форматы: {", ".join(settings.ALLOWED_IMAGE_EXTENSIONS)}'
+            )
+
+        try:
+            img = Image.open(image)
+            img.verify()
+
+            image.seek(0)
+            img = Image.open(image)
+            width, height = img.size
+
+            if width > settings.MAX_IMAGE_WIDTH or height > settings.MAX_IMAGE_HEIGHT:
+                raise forms.ValidationError(
+                    f'Размер изображения не должен превышать {settings.MAX_IMAGE_WIDTH}x{settings.MAX_IMAGE_HEIGHT} пикселей'
+                )
+
+            image.seek(0)
+
+        except (IOError, SyntaxError, AttributeError):
+            raise forms.ValidationError('Файл поврежден или не является валидным изображением')
+
+        return image
+
 
     def clean_price(self):
         price = self.cleaned_data.get('price')
