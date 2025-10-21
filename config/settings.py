@@ -108,6 +108,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'users.CustomUser'
+
+LOGOUT_REDIRECT_URL = 'catalog:home'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -144,3 +147,12 @@ FORBIDDEN_WORDS = [
     'казино', 'криптовалюта', 'крипта', 'биржа',
     'дешево', 'бесплатно', 'обман', 'полиция', 'радар'
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 587
+EMAIL_USE_SSL = False
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = os.getenv('YANDEX_EMAIL')
+EMAIL_HOST_PASSWORD = os.getenv('YANDEX_EMAIL_PASSWORD')
