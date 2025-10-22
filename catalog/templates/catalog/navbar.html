@@ -10,6 +10,7 @@
             <button type="submit" class="p-2 btn btn-outline-primary">Выйти
             </button>
         </form>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'users:user_detail' %}">Профиль</a>
         {% else %}
         {% csrf_token %}
         <a class="p-2 btn btn-outline-primary" href="{% url 'users:login' %}">Вход</a>
