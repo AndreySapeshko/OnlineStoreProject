@@ -1,0 +1,33 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+
+{% block navbar %}
+{% include 'catalog/navbar.html' %}
+{% endblock %}
+
+{% block h1 %}Skystore{% endblock %}
+
+{% block p %}Skystore - это отличный вариант хранения ваших плагинов и примеров кода, который вы бы хотели
+продать{% endblock %}
+
+{% block content %}
+<!-- Сюда будет подставляться контент дочерних шаблонов -->
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img src="{{ user.avatar | media_filter }}" class="img-fluid rounded-start"
+                 alt="{{ user.username }}">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">{{ user.username }}</h5>
+                <p class="card-text">E-mail: {{ user.email }}</p>
+                <p class="card-text">Телефон: {{ user.phone_number }}</p>
+                <p class="card-text">Страна: {{ user.country }}</p>
+                <a href="{% url 'users:user_edit' %}" class="btn btn-lg btn-outline-secondary">Редактировать</a>
+                <a href="/" class="btn btn-lg btn-outline-primary">Назад</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

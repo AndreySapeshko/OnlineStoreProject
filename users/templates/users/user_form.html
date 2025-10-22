@@ -11,12 +11,12 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">Регистрация</h1>
+    <h1 class="mb-4">Редактировать профиль</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.non_field_errors }}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
         <a href="{% url 'catalog:product_list' %}" class="btn btn-secondary">Отмена</a>
     </form>
 </div>
