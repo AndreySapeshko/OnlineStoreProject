@@ -40,7 +40,7 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
 
-class UserDetailView(LoginRequiredMixin, DetailView):
+class UserDetailView(DetailView):
     model = CustomUser
     template_name = 'users/user_detail.html'
     context_object_name = 'user'
