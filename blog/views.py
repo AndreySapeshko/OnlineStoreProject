@@ -4,6 +4,8 @@ from django.urls import reverse_lazy
 from .models import Post
 
 class PostCreateView(CreateView):
+    """ Класс описывающий представление страницы blog/post_form.html создание сообщения """
+
     model = Post
     fields = ['title', 'text', 'preview', 'is_published']
     template_name = 'blog/post_form.html'
@@ -11,20 +13,28 @@ class PostCreateView(CreateView):
 
 
 class PostListView(ListView):
+    """ Класс описывающий представление страницы blog/post_list.html """
+
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
 
     def get_queryset(self):
+        """ Метод отбирает только опубликованные сообщения """
+
         return Post.objects.filter(is_published=True)
 
 
 class PostDetailView(DetailView):
+    """ Класс описывающий представление страницы blog/post_detail.html """
+
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
 
     def get_object(self, queryset=None):
+        """ Метод увеличивает счетчик просмотров при просмотре поста """
+
         obj = super().get_object(queryset)
         viewed_posts = self.request.session.get('viewed_posts', [])
 
@@ -37,6 +47,8 @@ class PostDetailView(DetailView):
 
 
 class PostUpdateView(UpdateView):
+    """ Класс описывающий представление страницы blog/post_form.html редактирование поста """
+
     model = Post
     fields = ['title', 'text', 'preview', 'is_published']
     template_name = 'blog/post_form.html'
@@ -46,6 +58,8 @@ class PostUpdateView(UpdateView):
 
 
 class PostDeleteView(DeleteView):
+    """ Класс описывающий представление страницы blog/post_confirm_delete.html удаление поста """
+
     model = Post
     template_name = 'blog/post_confirm_delete.html'
     success_url = reverse_lazy('blog:post_list')

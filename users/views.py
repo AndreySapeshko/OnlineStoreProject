@@ -12,11 +12,15 @@ from .models import CustomUser
 
 
 class RegisterView(CreateView):
+    """ Класс описывающий представление страницы users/register.html """
+
     form_class = CustomUserCreationForm
     template_name = 'users/register.html'
     success_url = reverse_lazy('catalog:home')
 
     def send_welcome_email(self, user_email):
+        """ Метод отправляющий новому пользователю приветствие """
+
         subject = 'Добро пожаловать в наш магазин'
         message = 'Спасибо, что зарегистрировались у нас!'
         from_email = os.getenv('YANDEX_EMAIL')
@@ -24,6 +28,8 @@ class RegisterView(CreateView):
         send_mail(subject, message, from_email, recipient_list)
 
     def form_valid(self, form):
+        """ Метод проводит валидацию данных введенных в форму """
+
         user = form.save()
         login(self.request, user)
         self.send_welcome_email(user.email)
@@ -31,6 +37,8 @@ class RegisterView(CreateView):
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
+    """ Класс описывающий представление страницы users/user_form.html редактирования профиля """
+
     model = CustomUser
     form_class = UserUpdateForm
     template_name = 'users/user_form.html'
@@ -41,6 +49,8 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class UserDetailView(DetailView):
+    """ Класс описывающий представление страницы users/user_detail.html """
+
     model = CustomUser
     template_name = 'users/user_detail.html'
     context_object_name = 'user'

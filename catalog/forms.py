@@ -9,6 +9,8 @@ from .models import Product, Category
 
 
 class ProductForm(forms.ModelForm):
+    """ Класс описывающий форму для регистрации и редактирования Product """
+
     class Meta:
         model = Product
         fields = ['name', 'description', 'price', 'category', 'product_image']
@@ -17,6 +19,8 @@ class ProductForm(forms.ModelForm):
         }
 
     def clean_product_image(self):
+        """ Метод валидации изображения по формату, размеру, весу и представлению """
+
         image = self.cleaned_data.get('product_image')
         if not image:
             return image
@@ -54,12 +58,16 @@ class ProductForm(forms.ModelForm):
 
 
     def clean_price(self):
+        """ Метод валидации поля цена, не должно быть отрицательным """
+
         price = self.cleaned_data.get('price')
         if price and price < 0:
             raise forms.ValidationError(message='Цена не может быть ниже ноля.')
         return price
 
     def clean(self):
+        """ Метод валидации на содержание запрещенных слов """
+
         cleaned_data = super().clean()
         name = cleaned_data.get('name')
         description = cleaned_data.get('description')
@@ -70,6 +78,8 @@ class ProductForm(forms.ModelForm):
         return cleaned_data
 
     def __init__(self, *args, **kwargs):
+        """ метод устанавливает стиль формы """
+
         super(ProductForm, self).__init__(*args, **kwargs)
         self.fields['name'].widget.attrs.update({
             'class': 'form-control', 'placeholder': 'Введите название'
@@ -89,6 +99,8 @@ class ProductForm(forms.ModelForm):
 
 
 class CategoryForm(forms.ModelForm):
+    """ Класс описывающий форму создания и редактирования Category """
+
     class Meta:
         model = Category
         fields = ['name', 'description']
@@ -97,6 +109,8 @@ class CategoryForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        """ Метод устанавливает стиль форме """
+
         super(CategoryForm, self).__init__(*args, **kwargs)
         self.fields['name'].widget.attrs.update({
             'class': 'form-control', 'placeholder': 'Введите название'
