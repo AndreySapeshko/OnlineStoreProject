@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import CustomUser
 
 
 class Category(models.Model):
@@ -29,6 +30,8 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='categories')
+    is_active = models.BooleanField(default=False)
+    owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='owner')
 
     def __str__(self):
         return f'{self.name} цена: {self.price} р.'
