@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.urls import reverse_lazy
@@ -14,16 +15,24 @@ from .forms import ProductForm, CategoryForm
 
 
 class HomeView(View):
+    """ Класс описывающий представление страницы catalog/home.html """
+
     def get(self, request):
         products = Product.objects.all()
         return render(request, 'catalog/home.html', {'products': products})
 
 
 class ContactsView(View):
+    """ Класс описывающий представление страницы catalog/contacts.html """
+
     def get(self, request):
+        """ Метод определяет поведение при get-запросе """
+
         return render(request,'catalog/contacts.html')
 
     def post(self, request):
+        """ Метод определяет поведение при post-запросе """
+
         name = request.POST.get('name')
         message = request.POST.get('message')
         phone = request.POST.get('phone')
@@ -32,26 +41,34 @@ class ContactsView(View):
 
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
+    """ Класс описывающий представление страницы catalog/product_confirm_delete.html удаление продукта """
+
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('catalog:product_list')
 
 
 class ProductListView(ListView):
+    """ Класс описывающий представление страницы catalog/product_list.html """
+
     model = Product
     template_name = 'catalog/product_list.html'
     context_object_name = 'products'
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
+    """ Класс описывающий представление страницы catalog/product_form.html редактирование продукта """
+
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:product_list')
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
+    """ Класс описывающий представление страницы catalog/product_form.html создание продукта """
+
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
@@ -59,13 +76,17 @@ class ProductCreateView(CreateView):
 
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
+    """ Класс описывающий представление страницы catalog/product_detail.html """
+
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
 
 
-class CategoryCreateView(CreateView):
+class CategoryCreateView(LoginRequiredMixin, CreateView):
+    """ Класс описывающий представление страницы catalog/category_form.html создание категории """
+
     model = Category
     template_name = 'catalog/category_form.html'
     form_class = CategoryForm
@@ -73,46 +94,33 @@ class CategoryCreateView(CreateView):
 
 
 class CategoryListView(ListView):
+    """ Класс описывающий представление страницы catalog/category_list.html """
+
     model = Category
     template_name = 'catalog/category_list.html'
     context_object_name = 'categories'
 
 
-class CategoryDetailView(DetailView):
+class CategoryDetailView(LoginRequiredMixin, DetailView):
+    """ Класс описывающий представление страницы catalog/category_detail.html """
+
     model = Category
     template_name = 'catalog/category_detail.html'
     context_object_name = 'category'
 
 
-class CategoryUpdateView(UpdateView):
+class CategoryUpdateView(LoginRequiredMixin, UpdateView):
+    """ Класс описывающий представление страницы catalog/category_form.html редактирование категории """
+
     model = Category
     template_name = 'catalog/category_form.html'
     form_class = CategoryForm
     success_url = reverse_lazy('catalog:category_list')
 
 
-class CategoryDeleteView(DeleteView):
+class CategoryDeleteView(LoginRequiredMixin, DeleteView):
+    """ Класс описывающий представление страницы catalog/category_confirm_delete.html удаление категории """
+
     model = Category
     template_name = 'catalog/category_confirm_delete.html'
     success_url = reverse_lazy('catalog:category_list')
-
-
-def add_product(request):
-    categories = Category.objects.all()
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            product = form.save()
-            return redirect('catalog:product', product_id=product.pk)
-        else:
-            # Вывод всех ошибок в консоль
-            print("Форма невалидна!")
-            print("Ошибки формы:", form.errors)
-            print("Ошибки по полям:")
-            for field in form:
-                if field.errors:
-                    print(f"Поле '{field.label}': {field.errors}")
-    else:
-        form = ProductForm()
-
-    return render(request, 'catalog/add_product.html', {'form': form, 'categories': categories})

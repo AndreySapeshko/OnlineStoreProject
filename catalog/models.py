@@ -2,6 +2,7 @@ from django.db import models
 
 
 class Category(models.Model):
+    """ Класс описывающий модель Category (категория товаров) """
 
     name = models.CharField(max_length=100, verbose_name='Категория')
     description = models.CharField(max_length=300, verbose_name='Описание')
@@ -16,6 +17,7 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    """ Класс описывающий модель Product """
 
     name = models.CharField(max_length=100, verbose_name='Наименование')
     description = models.CharField(max_length=300, verbose_name='Описание')
