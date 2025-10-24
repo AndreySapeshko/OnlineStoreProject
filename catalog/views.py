@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, CreateView, ListView, UpdateView, DeleteView
@@ -48,6 +48,15 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('catalog:product_list')
 
+    def post(self, request, product_pk):
+        product = get_object_or_404(Product, product_pk)
+
+        if not request.user.has_perm('catalog.can_delete_product'):
+            return HttpResponseForbidden('У вас нет прав удалять продукты.')
+
+        product.delete()
+        return redirect('catalog:product_list')
+
 
 class ProductListView(ListView):
     """ Класс описывающий представление страницы catalog/product_list.html """
@@ -64,6 +73,15 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:product_list')
+
+    def post(self, request, product_pk):
+        product = get_object_or_404(Product, product_pk)
+
+        if not request.user.has_perm('catalog.can_unpublish_product'):
+            return HttpResponseForbidden('У вас нет прав отменять публикацию продукта.')
+
+        product.delete()
+        return redirect('catalog:product_list')
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):

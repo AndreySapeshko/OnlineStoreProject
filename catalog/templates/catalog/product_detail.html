@@ -22,8 +22,12 @@
             <div class="card-body">
                 <h5 class="card-title">{{ product.name }}</h5>
                 <p class="card-text">{{ product.description }}</p>
-                <a href="{% url 'catalog:product_edit' product.pk %}" class="btn btn-lg btn-outline-secondary">Редактировать</a>
-                <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-lg btn-outline-danger">Удалить</a>
+                {% if perms.catalog.can_unpublish_product %}
+                    <a href="{% url 'catalog:product_edit' product.pk %}" class="btn btn-lg btn-outline-secondary">Редактировать</a>
+                {% endif %}
+                {% if perms.catalog.can_delete_product %}
+                    <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-lg btn-outline-danger">Удалить</a>
+                {% endif %}
                 <a href="{% url 'catalog:product_list' %}" class="btn btn-lg btn-outline-primary">Вернуться к списку</a>
             </div>
         </div>
