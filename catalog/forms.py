@@ -100,6 +100,14 @@ class ProductForm(forms.ModelForm):
             'class': 'form-check-input', 'placeholder': 'Опубликовать'
         })
 
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if not instance.owner_id and self.user:
+            instance.owner = self.user
+        if commit:
+            instance.save()
+        return instance
+
 
 class CategoryForm(forms.ModelForm):
     """ Класс описывающий форму создания и редактирования Category """
