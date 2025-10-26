@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.template.context_processors import request
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.shortcuts import render, redirect, get_object_or_404
@@ -7,9 +8,11 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, CreateView, ListView, UpdateView, DeleteView
+from unicodedata import category
 
 from .models import Product, Category
 from .forms import ProductForm, CategoryForm
+from .services import ProductService
 
 
 # def home(request):
@@ -23,6 +26,22 @@ class HomeView(View):
     def get(self, request):
         products = Product.objects.all()
         return render(request, 'catalog/home.html', {'products': products})
+
+
+class ProductsInCategoryView(ListView):
+    """ Класс описывающий представление страницы catalog/category_products.html """
+
+    model = Product
+    template_name = 'catalog/category_products.html'
+    context_object_name = 'products'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category_pk = self.kwargs['pk']
+        context['category'] = Category.objects.get(pk=category_pk)
+        context['products'] = ProductService.get_products_in_category(category_pk)
+        return context
+
 
 
 class ContactsView(View):
@@ -53,6 +72,7 @@ class ProductDeleteView(UserPassesTestMixin, LoginRequiredMixin, DeleteView):
 
     def test_func(self):
         """ Проверяет, является ли пользователь владельцем продукта или модератором """
+
         product = self.get_object()
         user = self.request.user
         return user == product.owner or user.has_perm('catalog.can_delete_product')
