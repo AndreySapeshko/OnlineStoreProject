@@ -13,7 +13,7 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'category', 'product_image']
+        fields = ['name', 'description', 'price', 'category', 'product_image', 'is_active']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
         }
@@ -96,6 +96,17 @@ class ProductForm(forms.ModelForm):
         self.fields['product_image'].widget.attrs.update({
             'class': 'form-control', 'placeholder': 'Вставьте изображение'
         })
+        self.fields['is_active'].widget.attrs.update({
+            'class': 'form-check-input', 'placeholder': 'Опубликовать'
+        })
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if not instance.owner_id and self.user:
+            instance.owner = self.user
+        if commit:
+            instance.save()
+        return instance
 
 
 class CategoryForm(forms.ModelForm):

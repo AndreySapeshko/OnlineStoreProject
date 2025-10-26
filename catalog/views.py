@@ -1,6 +1,7 @@
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, CreateView, ListView, UpdateView, DeleteView
@@ -41,12 +42,18 @@ class ContactsView(View):
 
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(UserPassesTestMixin, LoginRequiredMixin, DeleteView):
     """ Класс описывающий представление страницы catalog/product_confirm_delete.html удаление продукта """
 
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('catalog:product_list')
+
+    def test_func(self):
+        """ Проверяет, является ли пользователь владельцем продукта или модератором """
+        product = self.get_object()
+        user = self.request.user
+        return user == product.owner or user.has_perm('catalog.can_delete_product')
 
 
 class ProductListView(ListView):
@@ -57,13 +64,19 @@ class ProductListView(ListView):
     context_object_name = 'products'
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(UserPassesTestMixin, LoginRequiredMixin, UpdateView):
     """ Класс описывающий представление страницы catalog/product_form.html редактирование продукта """
 
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:product_list')
+
+    def test_func(self):
+        """ Проверяет, является ли пользователь владельцем продукта или модератором """
+        product = self.get_object()
+        user = self.request.user
+        return user == product.owner or user.has_perm('catalog.can_unpublish_product')
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -74,6 +87,12 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:product_list')
 
+    def form_valid(self, form):
+        """Автоматически устанавливаем владельца при создании"""
+
+        if not form.instance.owner_id:
+            form.instance.owner = self.request.user
+        return super().form_valid(form)
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
